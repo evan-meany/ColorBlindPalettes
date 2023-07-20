@@ -1,6 +1,13 @@
 {
    "files.associations": {
       "*.gpan": "vb",
-      "cmath": "cpp"
+      "cmath": "cpp",
+      "iosfwd": "cpp",
+      "xlocale": "cpp",
+      "xlocnum": "cpp",
+      "map": "cpp",
+      "vector": "cpp",
+      "xstring": "cpp",
+      "xtree": "cpp"
    }
 }
