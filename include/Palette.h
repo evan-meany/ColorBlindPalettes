@@ -1,13 +1,15 @@
 #pragma once
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <cmath>
 #include <string>
 #include <iostream>
 
 namespace color
 {
+
+static const size_t VULCAN_PALETTE_SIZE = 256;
 
 static const double PROTANOPIA_MATRIX[9] = 
 {
@@ -58,7 +60,7 @@ enum BlindnessType : size_t
    DEUTERANOMALY, PROTANOMALY, TRITANOMALY, LAST
 };
 
-const std::map<BlindnessType, std::string> BlindnessTypeNames = {
+const std::unordered_map<BlindnessType, std::string> BlindnessTypeNames = {
    {BlindnessType::NORMAL, "Normal"},
    {BlindnessType::DEUTERANOPIA, "Deuteranopia"},
    {BlindnessType::PROTANOPIA, "Protanopia"},
@@ -85,6 +87,7 @@ struct Palette
    void Print(bool colors = false) const;
    void Evaluate();
    void Draw() const;
+   void AppendToDrawing(size_t offsetX, size_t offsetY) const;
    std::vector<Color> m_Colors;
    std::string m_Name;
    struct PaletteEvaluation
@@ -107,6 +110,7 @@ struct Palette
       double m_MinDistance;
       double m_MaxDistance;
       double m_ColorRepresentation;
+      double m_TotalEvaluation;
    };
 
    PaletteEvaluation m_Evaluation;
@@ -129,8 +133,9 @@ public:
    void PrintPalettes() const;
    void PrintPaletteQuality() const;
    void DrawPalette(size_t id, BlindnessType type) const;
+   void DrawPalettes(size_t id) const;
 private:
-   std::map<size_t, std::map<BlindnessType, Palette>> m_Palettes;
+   std::unordered_map<size_t, std::unordered_map<BlindnessType, Palette>> m_Palettes;
 private:
    size_t AddPalette(const Palette& palette);
 
@@ -140,6 +145,22 @@ private:
    size_t GenerateAllBlack();
    size_t GenerateDefault();
    size_t GenerateVisibleSpectrum();
+};
+
+class PalettesGA
+{
+public:
+   PalettesGA(const BlindnessType type, const size_t size);
+   void RunGA(const size_t numGenerations, const double mutationRate, const double crossoverRate);
+private:
+   std::vector<std::pair<Palette, Palette>> m_Palettes;
+   BlindnessType m_Type;
+   size_t m_PopulationSize;
+private:
+   void EvaluatePopulation();
+   std::vector<Palette> SelectParents(double& averageDistance);
+   Palette Crossover(const Palette& parent1, const Palette& parent2);
+   void Mutate(Palette& palette, const double mutationRate);
 };
 
 };

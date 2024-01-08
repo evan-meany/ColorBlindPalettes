@@ -20,8 +20,8 @@ project "ColorBlindPalettes"
 
     filter "configurations:Debug"
         defines { "DEBUG" }
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines { "NDEBUG" }
-        optimize "On"
+        optimize "on"
